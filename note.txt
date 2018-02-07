@@ -1,0 +1,42 @@
+
+MySQLのコンテナをビルド
+
+初期設定ファイルなどは、この中に設定しておく
+
+docker build -t mysql:v1 -f Dockerfile.mysql .
+
+
+
+
+レジストリへ登録
+
+docker tag mysql:v1 registry.au-syd.bluemix.net/takara/mysql:v1
+docker push registry.au-syd.bluemix.net/takara/mysql:v1
+kubectl create -f k003.yml
+
+
+
+永続ストレージのマウントを確認
+
+
+imac:lesson8_dev_package maho$ kubectl exec -it mysql-server-645dc7dfb7-zbs9r bash
+root@mysql-server-645dc7dfb7-zbs9r:/tmp# df
+Filesystem                                                     1K-blocks    Used Available Use% Mounted on
+...
+fsf-tok0201b-fz.service.softlayer.com:/IBM02SEV289550_2/data01  20971520  215936  20755584   2% /var/lib/mysql
+...
+
+
+Redis
+
+
+docker build -t web:v1 -f Dockerfile.web .
+docker tag web:v1 registry.au-syd.bluemix.net/takara/web:v1
+docker push registry.au-syd.bluemix.net/takara/web:v1
+
+
+docker build -t app:v1 -f Dockerfile.app .
+docker tag app:v1 registry.au-syd.bluemix.net/takara/app:v1
+docker push registry.au-syd.bluemix.net/takara/app:v1
+
+
