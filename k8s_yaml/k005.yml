@@ -10,9 +10,18 @@ spec:
         app: web-app
     spec:
       restartPolicy: Always
+      hostname: app
       containers:	     
-      - name: app
+      - name: web
         image: registry.au-syd.bluemix.net/takara/web:v1
+        ports:
+        - containerPort: 80
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/www
+          name: www-vol
+      - name: app
+        image: registry.au-syd.bluemix.net/takara/app:v1
         env:
         - name: DB_USER
           value: root
@@ -22,20 +31,14 @@ spec:
         volumeMounts:
         - mountPath: /var/www
           name: www-vol
-      - name: web
-        image: registry.au-syd.bluemix.net/takara/web:v1
-        ports:
-        - containerPort: 80
-        resources: {}
+      initContainers:
+      - name: pull-contents
+        image: maho/git_client:v1
+        command: ["git",  "clone", "https://github.com/takara9/php-apl-1", "/var/www"]
         volumeMounts:
         - mountPath: /var/www
           name: www-vol
       volumes:
       - name: www-vol
-        hostPath:
-          # directory location on host
-          path: /tmp/
-          # this field is optional
-          type: Directory
-
+        emptyDir: {}
 
