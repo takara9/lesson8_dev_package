@@ -1,0 +1,214 @@
+bx login 
+bx cs region-set ap-north
+bx cr region-set ap-south
+bx cs clusters
+bx cs cluster-config [自分のクラスタ名]
+
+
+MySQLサーバーの起動とサービスの開始
+サービスの開始によって、クラスタIPの取得とDNS登録がされ、他のデプロイメントからアクセスできる
+
+kubectl create -f k003_mysql.yml
+kubectl create -f k008_mysql_svc.yml
+
+
+
+Redisサーバーの起動とサービスの開始
+
+kubectl create -f k004_redis.yml 
+kubectl create -f k007_redis_svc.yml 
+
+
+アプリの起動
+
+kubectl create -f k005_web-app.yml
+kubectl create -f k006_nodeport.yml 
+
+
+
+URLの確認
+ 
+bx cs cluster-get mycluster3
+Ingress subdomain:	mycluster3.jp-tok.containers.mybluemix.net
+
+
+http://mycluster3.jp-tok.containers.mybluemix.net:31514/
+
+
+
+削除順番
+
+kubectl delete -f k006_nodeport.yml 
+service "web-app-nodeport" deleted
+
+kubectl delete -f k005_web-app.yml 
+deployment "web-app" deleted
+
+kubectl delete -f k007_redis_svc.yml 
+service "redis" deleted
+
+kubectl delete -f k004_redis.yml 
+deployment "redis" deleted
+
+kubectl delete -f k008_mysql_svc.yml 
+service "mysql" deleted
+
+kubectl delete -f k003_mysql.yml 
+deployment "mysql-server" deleted
+
+kubectl delete -f k001_pvc.yml 
+persistentvolumeclaim "mypvc1" deleted
+
+
+--------------
+imac:k8s_yaml maho$ kubectl create -f s01_pvc.yml 
+persistentvolumeclaim "pvc-01" created
+
+imac:k8s_yaml maho$ kubectl get pvc
+NAME      STATUS    VOLUME                                     CAPACITY   ACCESSMODES   STORAGECLASS       AGE
+pvc-01    Bound     pvc-15695485-0c8a-11e8-bca9-d6467fb293a9   20Gi       RWX           ibmc-file-bronze   1m
+imac:k8s_yaml maho$ kubectl get pv
+NAME                                       CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS    CLAIM            STORAGECLASS       REASON    AGE
+pvc-15695485-0c8a-11e8-bca9-d6467fb293a9   20Gi       RWX           Delete          Bound     default/pvc-01   ibmc-file-bronze             32s
+
+
+--------------
+
+imac:k8s_yaml maho$ kubectl create -f s02_mysql_deploy.yml 
+deployment "mysql-server" created
+
+
+imac:k8s_yaml maho$ kubectl get all
+NAME                                READY     STATUS    RESTARTS   AGE
+po/go-web-deploy-856cb84d69-68s69   1/1       Running   0          21d
+po/go-web-deploy-856cb84d69-dhqfm   1/1       Running   0          21d
+po/go-web-deploy-856cb84d69-rbvq6   1/1       Running   0          21d
+po/mysql-server-7c9f9b8499-l6nwq    1/1       Running   0          58s
+
+NAME             CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+svc/go-web-svc   172.21.98.138   <none>        8080/TCP   21d
+svc/kubernetes   172.21.0.1      <none>        443/TCP    69d
+
+NAME                   DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deploy/go-web-deploy   3         3         3            3           21d
+deploy/mysql-server    1         1         1            1           58s
+
+NAME                          DESIRED   CURRENT   READY     AGE
+rs/go-web-deploy-856cb84d69   3         3         3         21d
+rs/mysql-server-7c9f9b8499    1         1         1         58s
+
+-------
+
+imac:k8s_yaml maho$ kubectl create -f s03_mysql_svc.yml 
+service "mysql" created
+
+imac:k8s_yaml maho$ kubectl get svc
+NAME         CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+go-web-svc   172.21.98.138   <none>        8080/TCP   21d
+kubernetes   172.21.0.1      <none>        443/TCP    69d
+mysql        172.21.31.51    <none>        3306/TCP   39s
+
+
+------
+
+
+imac:k8s_yaml maho$ kubectl create -f s04_redis_deploy.yml
+deployment "redis" created
+imac:k8s_yaml maho$ kubectl get all
+NAME                                READY     STATUS    RESTARTS   AGE
+po/go-web-deploy-856cb84d69-68s69   1/1       Running   0          21d
+po/go-web-deploy-856cb84d69-dhqfm   1/1       Running   0          21d
+po/go-web-deploy-856cb84d69-rbvq6   1/1       Running   0          21d
+po/mysql-server-7c9f9b8499-l6nwq    1/1       Running   0          4m
+po/redis-6684588cdb-r8g4p           1/1       Running   0          15s
+
+NAME             CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+svc/go-web-svc   172.21.98.138   <none>        8080/TCP   21d
+svc/kubernetes   172.21.0.1      <none>        443/TCP    69d
+svc/mysql        172.21.31.51    <none>        3306/TCP   3m
+
+NAME                   DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deploy/go-web-deploy   3         3         3            3           21d
+deploy/mysql-server    1         1         1            1           4m
+deploy/redis           1         1         1            1           15s
+
+NAME                          DESIRED   CURRENT   READY     AGE
+rs/go-web-deploy-856cb84d69   3         3         3         21d
+rs/mysql-server-7c9f9b8499    1         1         1         4m
+rs/redis-6684588cdb           1         1         1         15s
+
+
+
+imac:k8s_yaml maho$ kubectl create -f s05_redis_svc.yml 
+service "redis" created
+imac:k8s_yaml maho$ kubectl get svc
+NAME         CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+go-web-svc   172.21.98.138   <none>        8080/TCP   21d
+kubernetes   172.21.0.1      <none>        443/TCP    69d
+mysql        172.21.31.51    <none>        3306/TCP   3m
+redis        172.21.75.89    <none>        6379/TCP   4s
+
+
+-------------
+
+imac:k8s_yaml maho$ kubectl create -f s06_web-app.yml 
+deployment "web-app" created
+
+
+imac:k8s_yaml maho$ kubectl get all
+NAME                                READY     STATUS    RESTARTS   AGE
+po/go-web-deploy-856cb84d69-68s69   1/1       Running   0          21d
+po/go-web-deploy-856cb84d69-dhqfm   1/1       Running   0          21d
+po/go-web-deploy-856cb84d69-rbvq6   1/1       Running   0          21d
+po/mysql-server-7c9f9b8499-l6nwq    1/1       Running   0          8m
+po/redis-6684588cdb-r8g4p           1/1       Running   0          4m
+po/web-app-865b585b89-6phr6         2/2       Running   0          47s
+po/web-app-865b585b89-6sdnx         2/2       Running   0          47s
+po/web-app-865b585b89-pzrp6         2/2       Running   0          47s
+
+NAME             CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+svc/go-web-svc   172.21.98.138   <none>        8080/TCP   21d
+svc/kubernetes   172.21.0.1      <none>        443/TCP    69d
+svc/mysql        172.21.31.51    <none>        3306/TCP   7m
+svc/redis        172.21.75.89    <none>        6379/TCP   3m
+
+NAME                   DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deploy/go-web-deploy   3         3         3            3           21d
+deploy/mysql-server    1         1         1            1           8m
+deploy/redis           1         1         1            1           4m
+deploy/web-app         3         3         3            3           47s
+
+NAME                          DESIRED   CURRENT   READY     AGE
+rs/go-web-deploy-856cb84d69   3         3         3         21d
+rs/mysql-server-7c9f9b8499    1         1         1         8m
+rs/redis-6684588cdb           1         1         1         4m
+rs/web-app-865b585b89         3         3         3         47s
+
+
+
+
+
+imac:k8s_yaml maho$ bx cs cluster-get mycluster3
+Retrieving cluster mycluster3...
+OK
+
+Name:			mycluster3
+ID:			20bee482ba9d4a9687dea557b8b13271
+State:			normal
+Created:		2017-12-01T02:04:01+0000
+Location:		tok02
+Master URL:		https://161.202.126.210:21708
+Ingress subdomain:	mycluster3.jp-tok.containers.mybluemix.net
+Ingress secret:		mycluster3
+Workers:		3
+Version:		1.8.6_1505
+Owner Email:		TAKARA@jp.ibm.com
+Monitoring dashboard:	https://metrics.ng.bluemix.net/app/#/grafana4/dashboard/db/a-753c62201245d3d333a3033556c66d71_ClusterMonitoringDashboard_v1?scopeId=a-753c62201245d3d333a3033556c66d71&?var-Account_ID=a_753c62201245d3d333a3033556c66d71&var-Cluster=mycluster3&var-Namespace=default&var-Pod_ID=All
+
+Addons
+Name                   Enabled   
+basic-ingress-v2       true   
+customer-storage-pod   true   
+storage-watcher-pod    true
+
+

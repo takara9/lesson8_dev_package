@@ -26,7 +26,10 @@ browsers = [
 
 # アクセスするウェブサイト
 sites =  [
-    { "www": "http://localhost:4040/index.php" }
+#    { "www": "http://localhost:4040/" }    
+    { "www": "http://169.56.7.55/" }
+#    { "www": "http://mycluster3.jp-tok.containers.mybluemix.net:31514/index.php" }    
+#    { "www": "http://localhost:4040/index.php" }
 #    { "www": "http://localhost:4040/index.php"  },
 #    { "www": "http://localhost:4040/index2.php" },
 #    { "www": "http://localhost:4040/index.php"  },
@@ -59,19 +62,21 @@ def proc(idx):
         elem_userid.send_keys(browser['uid'])
         elem_passwd = driver[tid].find_element_by_name('passwd')
         elem_passwd.send_keys(browser['pw'])
-        time.sleep(5)
+        time.sleep(3)
         elem_passwd.submit()
 
-        
-        for i in range(0,100):
-            time.sleep(3)
-            # 以下、３つのどちらでも動作可能
-            #elem_search_btn = driver[tid].find_element_by_id("btn")
-            #elem_search_btn = driver[tid].find_element_by_name("reload")
-            elem_search_btn = driver[tid].find_element_by_xpath('//*[@id="btn"]')
-            elem_search_btn.click()
-
-        
+        for i in range(0,500):
+            try:
+                time.sleep(2)
+                # 以下、３つのどちらでも動作可能
+                #elem_search_btn = driver[tid].find_element_by_id("btn")
+                #elem_search_btn = driver[tid].find_element_by_name("reload")
+                elem_search_btn = driver[tid].find_element_by_xpath('//*[@id="btn"]')
+                elem_search_btn.click()
+                #print(driver.title)
+            except:
+                print("error")
+                
         # 終了
         driver[tid].quit()        
 

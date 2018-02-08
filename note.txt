@@ -1,14 +1,10 @@
-
-MySQLのコンテナをビルド
+# MySQLのコンテナをビルド 
 
 初期設定ファイルなどは、この中に設定しておく
-
 docker build -t mysql:v1 -f Dockerfile.mysql .
 
 
-
-
-レジストリへ登録
+## レジストリへ登録
 
 docker tag mysql:v1 registry.au-syd.bluemix.net/takara/mysql:v1
 docker push registry.au-syd.bluemix.net/takara/mysql:v1
@@ -16,7 +12,7 @@ kubectl create -f k003.yml
 
 
 
-永続ストレージのマウントを確認
+## 永続ストレージのマウントを確認 
 
 
 imac:lesson8_dev_package maho$ kubectl exec -it mysql-server-645dc7dfb7-zbs9r bash
@@ -27,8 +23,32 @@ fsf-tok0201b-fz.service.softlayer.com:/IBM02SEV289550_2/data01  20971520  215936
 ...
 
 
-Redis
 
+## Redisサーバー
+
+DockerHubのRedisをそのまま利用
+
+image: redis:latest
+
+
+## コンテンツ・コンテナ
+
+コンテンツを詰めたコンテナで、
+ポッドの初期化コンテナとして利用して
+初期化時に自分のペイロードにあるデータをポッドの共有ディスクに書き出す
+
+docker build -t web_contents:v1 -f docker/Dockerfile.payload .
+docker run --rm -it web_contents:v1 sh
+
+$ docker login
+$ docker tag web_contents:v1 maho/web_contents:v1
+$ docker push maho/web_contents:v1
+
+
+
+
+
+## WebとAppサーバー
 
 docker build -t web:v1 -f Dockerfile.web .
 docker tag web:v1 registry.au-syd.bluemix.net/takara/web:v1
@@ -38,5 +58,9 @@ docker push registry.au-syd.bluemix.net/takara/web:v1
 docker build -t app:v1 -f Dockerfile.app .
 docker tag app:v1 registry.au-syd.bluemix.net/takara/app:v1
 docker push registry.au-syd.bluemix.net/takara/app:v1
+
+
+
+
 
 
