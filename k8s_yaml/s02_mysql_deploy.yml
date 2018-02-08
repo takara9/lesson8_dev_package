@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mysql-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql-server
+    spec:
+      containers:
+      - name: mysql
+        image: registry.au-syd.bluemix.net/takara/mysql:v1
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_DATABASE
+          value: test
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_USER
+          value: dev
+        - name: MYSQL_PASSWORD
+          value: dev
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: pvol
+          subPath: mysql-data  
+      volumes:
+      - name: pvol
+        persistentVolumeClaim:
+          claimName: pvc-01
+
+
