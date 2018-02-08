@@ -14,20 +14,20 @@ driver = {}  # 各スレッドのwebdriverオブジェクト格納用
 
 # ブラウザのサイズと表示位置
 browsers = [
-    { "size-x": "640", "size-y": "480", "pos-x": "0",    "pos-y": "0",   "uid": "tanaka",   "pw": "000"},
-    { "size-x": "640", "size-y": "480", "pos-x": "640",  "pos-y": "0",   "uid": "suzuki",   "pw": "000"},
-    { "size-x": "640", "size-y": "480", "pos-x": "1280", "pos-y": "0",   "uid": "sato",     "pw": "000"},
-    { "size-x": "640", "size-y": "480", "pos-x": "1920", "pos-y": "0",   "uid": "yamamoto", "pw": "000"},
-    { "size-x": "640", "size-y": "480", "pos-x": "0",    "pos-y": "480", "uid": "sakata",   "pw": "000"},
-    { "size-x": "640", "size-y": "480", "pos-x": "640",  "pos-y": "480", "uid": "hashimoto","pw": "000"},
-    { "size-x": "640", "size-y": "480", "pos-x": "1280", "pos-y": "480", "uid": "yamada",   "pw": "000"},
-    { "size-x": "640", "size-y": "480", "pos-x": "1920", "pos-y": "480", "uid": "kawada",   "pw": "000"}
+    { "size-x": "640", "size-y": "480", "pos-x": "0",    "pos-y": "0",   "uid": "tanaka",    "pw": "000", "pase": "1"},
+    { "size-x": "640", "size-y": "480", "pos-x": "640",  "pos-y": "0",   "uid": "suzuki",    "pw": "000", "pase": "2"},
+    { "size-x": "640", "size-y": "480", "pos-x": "1280", "pos-y": "0",   "uid": "sato",      "pw": "000", "pase": "3"},
+    { "size-x": "640", "size-y": "480", "pos-x": "1920", "pos-y": "0",   "uid": "yamamoto",  "pw": "000", "pase": "4"},
+    { "size-x": "640", "size-y": "480", "pos-x": "0",    "pos-y": "480", "uid": "sakata",    "pw": "000", "pase": "3"},
+    { "size-x": "640", "size-y": "480", "pos-x": "640",  "pos-y": "480", "uid": "hashimoto", "pw": "000", "pase": "2"},
+    { "size-x": "640", "size-y": "480", "pos-x": "1280", "pos-y": "480", "uid": "yamada",    "pw": "000", "pase": "1"},
+    { "size-x": "640", "size-y": "480", "pos-x": "1920", "pos-y": "480", "uid": "kawada",    "pw": "000", "pase": "5"}
 ]
 
 # アクセスするウェブサイト
 sites =  [
-#    { "www": "http://localhost:4040/" }    
-    { "www": "http://169.56.7.55/" }
+    { "www": "http://localhost:4040/" }    
+#    { "www": "http://169.56.7.55/" }
 #    { "www": "http://mycluster3.jp-tok.containers.mybluemix.net:31514/index.php" }    
 #    { "www": "http://localhost:4040/index.php" }
 #    { "www": "http://localhost:4040/index.php"  },
@@ -67,7 +67,7 @@ def proc(idx):
 
         for i in range(0,500):
             try:
-                time.sleep(2)
+                time.sleep(int(browser['pase']))
                 # 以下、３つのどちらでも動作可能
                 #elem_search_btn = driver[tid].find_element_by_id("btn")
                 #elem_search_btn = driver[tid].find_element_by_name("reload")
