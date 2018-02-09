@@ -32,9 +32,9 @@ spec:
         - mountPath: /var/www
           name: www-vol
       initContainers:
-      - name: pull-contents
-        image: maho/git_client:v1
-        command: ["git",  "clone", "https://github.com/takara9/php-apl-1", "/var/www"]
+      - name: cp-contents
+        image: maho/web_contents:green
+        command: ["cp",  "-r", ".", "/var/www"]
         volumeMounts:
         - mountPath: /var/www
           name: www-vol
