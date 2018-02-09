@@ -48,7 +48,6 @@ $ docker push maho/web_contents:v1
 
 
 
-
 ## WebとAppサーバー
 
 docker build -t web:v1 -f Dockerfile.web .
