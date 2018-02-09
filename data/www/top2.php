@@ -11,34 +11,48 @@ $dao = new DaoPersons();
 $rslt = $dao->find_by_userid($_SESSION["userid"]);
 ?>
 
-<h1>アプリ ver 1.0</h1>
+<h1>アプリ ver 1.1</h1>
 
 <table>
 <tr>
-  <th width="100">
-    項目
-  </th>
-  <th width="100">
-    データ
-  </th>
   <th width="180">
     写真
   </th>
+  <th width="100">
+    項目
+  </th>
+  <th width="180">
+    データ
+  </th>
 </tr>
 
+      
 <tr>
+<td rowspan="4" align="center">
+  <img src="images/<?php print $rslt['photo_file_name']?>" width="180">
+</td>
+
 <td>
-  ユーザー名:
+  苗字:
 </td>
 <td>
   <font size=7 color="black">
     <?php print $rslt['kanji_name']; ?>
   </font>
 </td>
-<td rowspan="3" align="center">
-  <img src="images/<?php print $rslt['photo_file_name']?>" width="150">
-</td>
 </tr>
+
+<tr>
+  <td>
+    名前:
+  </td>
+  <td>
+    <font size=7 color="black">
+      <?php print $rslt['kanji_fname']; ?>
+    </font>
+  </td>
+</tr>
+
 <!--
 <tr>
 <td>
