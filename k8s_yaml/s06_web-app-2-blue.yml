@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: web-app
 spec:
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -35,7 +35,8 @@ spec:
       - name: cp-contents
         image: maho/web_contents:blue
         command: ["cp",  "-r", ".", "/var/www"]
-        volumeMounts:
+        command: ["chmod",  "-R", "a+r", "/var/www"]
+      volumeMounts:
         - mountPath: /var/www
           name: www-vol
       volumes:
