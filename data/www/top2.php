@@ -29,7 +29,7 @@ $rslt = $dao->find_by_userid($_SESSION["userid"]);
       
 <tr>
 <td rowspan="4" align="center">
-  <img src="images/<?php print $rslt['photo_file_name']?>" width="180">
+  <img src="/images/<?php print $rslt['photo_file_name']?>" width="180">
 </td>
 
 <td>

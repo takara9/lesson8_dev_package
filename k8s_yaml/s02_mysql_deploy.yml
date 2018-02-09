@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: registry.au-syd.bluemix.net/takara/mysql:v1
+        image: registry.au-syd.bluemix.net/takara/mysql:v2
         ports:
         - containerPort: 3306
         env:
