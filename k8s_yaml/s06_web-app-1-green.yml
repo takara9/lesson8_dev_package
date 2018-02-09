@@ -38,12 +38,6 @@ spec:
         volumeMounts:
         - mountPath: /var/www
           name: www-vol
-      - name: chmod
-        image: busybox
-        command: ["chmod",  "-R", "a+r", "/var/www"]
-        volumeMounts:
-        - mountPath: /var/www
-          name: www-vol
       volumes:
       - name: www-vol
         emptyDir: {}
