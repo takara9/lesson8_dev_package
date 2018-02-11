@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: web-app-ingress
+  name: ingress-jenkins
 spec:
   tls:
   - hosts:
@@ -11,7 +11,7 @@ spec:
   - host: mycluster5.jp-tok.containers.mybluemix.net
     http:
       paths:
-      - path: /
+      - path: /jenkins
         backend:
-          serviceName: web-app
-          servicePort: 80
+          serviceName: jenkins-svc
+          servicePort: 8080

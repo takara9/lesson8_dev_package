@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web-jenkins
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web-jenkins
+    spec:
+      volumes:
+      - name: pvol
+        persistentVolumeClaim:
+          claimName: pvc-01
+      containers:	     
+      - name: jenkins-takara
+        image: jenkins
+        ports:
+        - containerPort: 8080
+        - containerPort: 50000
+        volumeMounts:
+        - mountPath: /var/jenkins_home
+          name: pvol
+          subPath: jenkins-data  
+      initContainers:
+      - name: chown
+        image: busybox
+        command: ["chown", "-R", "1000:1000", "/jenkins_home"]
+        volumeMounts:
+        - mountPath: /jenkins_home
+          name: pvol
+          subPath: jenkins-data

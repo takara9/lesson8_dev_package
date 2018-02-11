@@ -26,8 +26,8 @@ browsers = [
 
 # アクセスするウェブサイト
 sites =  [
-    { "www": "http://localhost:4040/" }    
-#    { "www": "http://169.56.7.55/" }
+#    { "www": "http://localhost:4040/" }    
+    { "www": "http://161.202.142.133/" }
 #    { "www": "http://mycluster3.jp-tok.containers.mybluemix.net:31514/index.php" }    
 #    { "www": "http://localhost:4040/index.php" }
 #    { "www": "http://localhost:4040/index.php"  },

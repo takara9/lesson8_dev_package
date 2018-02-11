@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web-pd
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web-pd
+    spec:
+      volumes:
+      - name: pvol
+        persistentVolumeClaim:
+          claimName: pvc-01
+      containers:	     
+      - name: ubuntu
+        image: ubuntu:latest
+        volumeMounts:
+        - mountPath: /mnt
+          name: pvol
+        command: ["tail",  "-f", "/dev/null"]    	

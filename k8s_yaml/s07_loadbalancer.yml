@@ -11,5 +11,4 @@ spec:
     port: 80
     targetPort: 80
     nodePort: 32222
-  loadBalancerIP: 169.56.7.55
-  
+  loadBalancerIP: 161.202.142.133 
